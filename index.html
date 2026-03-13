@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building with AI at Crux — Completion Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #08091A;
+      --surface:      #111228;
+      --surface2:     #181930;
+      --border:       #1E2040;
+      --border-light: #2A2C50;
+      --primary:      #6366F1;
+      --primary-dark: #4F51D8;
+      --primary-glow: rgba(99,102,241,0.18);
+      --violet:       #8B5CF6;
+      --cyan:         #06B6D4;
+      --success:      #10B981;
+      --success-bg:   rgba(16,185,129,0.08);
+      --success-bd:   rgba(16,185,129,0.25);
+      --error:        #F43F5E;
+      --error-bg:     rgba(244,63,94,0.08);
+      --error-bd:     rgba(244,63,94,0.25);
+      --text:         #EEF2FF;
+      --text-2:       #A5B4FC;
+      --text-muted:   #64748B;
+      --radius:       10px;
+      --radius-lg:    16px;
+      --ease:         0.18s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    /* ── Screens ───────────────────────────────────────────── */
+    .screen { display: none; min-height: 100vh; }
+    .screen.active { display: flex; flex-direction: column; }
+
+    /* ── Intro ─────────────────────────────────────────────── */
+    #screen-intro {
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px;
+      background:
+        radial-gradient(ellipse 80% 40% at 50% -10%, rgba(99,102,241,0.14) 0%, transparent 70%);
+    }
+
+    .intro-card { width: 100%; max-width: 540px; }
+
+    .wordmark {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      margin-bottom: 52px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .wordmark-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--violet));
+    }
+
+    .intro-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 12px;
+    }
+
+    .intro-title {
+      font-size: clamp(30px, 6vw, 46px);
+      font-weight: 900;
+      line-height: 1.08;
+      background: linear-gradient(135deg, #fff 0%, #C7D2FE 45%, #818CF8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
+    }
+
+    .intro-subtitle {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-2);
+      margin-bottom: 36px;
+    }
+
+    .intro-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 100px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .pill-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .intro-desc {
+      font-size: 15px;
+      color: #8492A6;
+      line-height: 1.75;
+      padding: 18px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--primary);
+      border-radius: var(--radius);
+      margin-bottom: 40px;
+    }
+    .intro-desc strong { color: var(--text); font-weight: 600; }
+
+    .field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      margin-bottom: 8px;
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 13px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color var(--ease), box-shadow var(--ease);
+    }
+    .text-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .text-input::placeholder { color: var(--text-muted); }
+
+    .field-error {
+      font-size: 13px;
+      color: var(--error);
+      margin-top: 6px;
+      margin-bottom: 0;
+      display: none;
+    }
+    .field-error.visible { display: block; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 24px;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all var(--ease);
+      border: none;
+      width: 100%;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--violet));
+      color: white;
+      margin-top: 20px;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(99,102,241,0.3); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border-light);
+      margin-top: 10px;
+    }
+    .btn-outline:hover { border-color: var(--primary); color: var(--text); }
+
+    /* ── Quiz ──────────────────────────────────────────────── */
+    .quiz-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(8,9,26,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+    }
+    .quiz-topbar-inner {
+      max-width: 660px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .topbar-logo {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      white-space: nowrap;
+    }
+    .progress-track {
+      flex: 1;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--violet));
+      transition: width 0.45s cubic-bezier(0.4,0,0.2,1);
+    }
+    .progress-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .quiz-body {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 44px 20px 80px;
+    }
+
+    .q-card {
+      width: 100%;
+      max-width: 660px;
+      animation: slideUp 0.28s cubic-bezier(0.22,1,0.36,1);
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .q-category {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      background: rgba(6,182,212,0.08);
+      border: 1px solid rgba(6,182,212,0.2);
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 18px;
+    }
+
+    .q-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .q-text {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.45;
+      color: var(--text);
+      margin-bottom: 30px;
+    }
+
+    .options {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: border-color var(--ease), background var(--ease), transform var(--ease);
+      user-select: none;
+    }
+    .opt:hover:not(.locked) {
+      border-color: rgba(99,102,241,0.5);
+      background: var(--surface2);
+      transform: translateX(2px);
+    }
+    .opt.locked { cursor: default; }
+
+    .opt.is-correct {
+      background: var(--success-bg);
+      border-color: var(--success-bd);
+    }
+    .opt.is-wrong {
+      background: var(--error-bg);
+      border-color: var(--error-bd);
+    }
+    .opt.show-answer {
+      background: rgba(16,185,129,0.05);
+      border-color: rgba(16,185,129,0.35);
+    }
+
+    .opt-badge {
+      width: 26px; height: 26px;
+      min-width: 26px;
+      border-radius: 6px;
+      background: var(--surface2);
+      border: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800;
+      color: var(--text-muted);
+      transition: all var(--ease);
+      margin-top: 1px;
+    }
+    .opt.is-correct .opt-badge { background: var(--success); border-color: var(--success); color: #fff; }
+    .opt.is-wrong .opt-badge   { background: var(--error);   border-color: var(--error);   color: #fff; }
+    .opt.show-answer .opt-badge { background: rgba(16,185,129,0.25); border-color: var(--success); color: var(--success); }
+
+    .opt-text { font-size: 15px; line-height: 1.55; padding-top: 3px; }
+
+    .feedback {
+      display: none;
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      line-height: 1.7;
+      animation: fadeIn 0.2s ease;
+      margin-bottom: 24px;
+    }
+    .feedback.correct { background: var(--success-bg); border: 1px solid var(--success-bd); color: #6EE7B7; }
+    .feedback.wrong   { background: var(--error-bg);   border: 1px solid var(--error-bd);   color: #FCA5A5; }
+    .feedback-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      opacity: 0.8;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .btn-next {
+      display: none;
+      width: 100%;
+      padding: 14px 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all var(--ease);
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-next:hover { background: var(--primary); border-color: var(--primary); transform: translateY(-1px); }
+    .btn-next.show { display: flex; }
+
+    /* ── Results ───────────────────────────────────────────── */
+    #screen-results {
+      align-items: center;
+      padding: 60px 20px 80px;
+      background:
+        radial-gradient(ellipse 70% 30% at 50% 0%, rgba(99,102,241,0.09) 0%, transparent 60%);
+    }
+
+    .results-card { width: 100%; max-width: 600px; }
+
+    .results-wordmark {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      margin-bottom: 52px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .score-hero {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+    .score-big {
+      font-size: 88px;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 8px;
+      letter-spacing: -2px;
+    }
+    .score-big.pass {
+      background: linear-gradient(135deg, #34D399, #10B981);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .score-big.fail {
+      background: linear-gradient(135deg, #FB7185, #F43F5E);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .score-denom { font-size: 16px; color: var(--text-muted); margin-bottom: 20px; }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 18px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .status-pill.pass { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #10B981; }
+    .status-pill.fail { background: rgba(244,63,94,0.1);  border: 1px solid rgba(244,63,94,0.3);  color: #F43F5E; }
+
+    .results-msg {
+      text-align: center;
+      font-size: 15px;
+      color: #8492A6;
+      line-height: 1.75;
+      margin-bottom: 44px;
+    }
+
+    .breakdown-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .breakdown-list { margin-bottom: 40px; }
+
+    .breakdown-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 13px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 7px;
+    }
+    .bd-icon {
+      width: 20px; height: 20px; min-width: 20px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 900;
+      margin-top: 1px;
+    }
+    .bd-icon.pass { background: var(--success); color: white; }
+    .bd-icon.fail { background: var(--error);   color: white; }
+    .bd-info { flex: 1; }
+    .bd-cat  { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+    .bd-ans  { font-size: 13px; color: var(--text-2); }
+
+    .open-feedback-section { margin-bottom: 32px; }
+
+    .results-textarea {
+      width: 100%;
+      padding: 13px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      resize: vertical;
+      min-height: 96px;
+      margin-top: 8px;
+      transition: border-color var(--ease), box-shadow var(--ease);
+    }
+    .results-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .results-textarea::placeholder { color: var(--text-muted); }
+
+    .results-actions { display: flex; flex-direction: column; gap: 10px; }
+
+    .submit-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 16px;
+    }
+
+    /* ── Toast ─────────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--surface2);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 11px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), opacity 0.3s;
+      z-index: 999;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.visible { transform: translateX(-50%) translateY(0); }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .q-text { font-size: 17px; }
+      .score-big { font-size: 64px; }
+      .intro-title { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     SCREEN 1 — INTRO
+════════════════════════════════════════ -->
+<div id="screen-intro" class="screen active">
+  <div class="intro-card">
+    <div class="wordmark"><span class="wordmark-dot"></span> Crux Climate</div>
+
+    <p class="intro-eyebrow">AI Training</p>
+    <h1 class="intro-title">Building with AI<br>at Crux</h1>
+    <p class="intro-subtitle">Completion Quiz</p>
+
+    <div class="intro-pills">
+      <span class="pill"><span class="pill-dot"></span>10 questions</span>
+      <span class="pill"><span class="pill-dot"></span>Multiple choice</span>
+      <span class="pill"><span class="pill-dot"></span>80% to pass</span>
+      <span class="pill"><span class="pill-dot"></span>Instant retake</span>
+    </div>
+
+    <div class="intro-desc">
+      You just watched the <strong>Building with AI at Crux</strong> training. This quiz covers the key concepts — approved tools, safe data handling, production guardrails, and where to get help.<br><br>
+      This isn't a gotcha — it's a quick gut-check that the guardrails are clear so you can <strong>experiment with confidence.</strong>
+    </div>
+
+    <label class="field-label" for="email-input">Your Crux email</label>
+    <input
+      type="email"
+      id="email-input"
+      class="text-input"
+      placeholder="you@cruxclimate.com"
+      autocomplete="email"
+      autofocus
+    >
+    <p class="field-error" id="email-error">Please enter a valid @cruxclimate.com email address.</p>
+
+    <button class="btn btn-primary" onclick="startQuiz()">Start Quiz →</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SCREEN 2 — QUIZ
+════════════════════════════════════════ -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-topbar">
+    <div class="quiz-topbar-inner">
+      <span class="topbar-logo">Crux</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+      <span class="progress-label" id="progress-label">1 / 10</span>
+    </div>
+  </div>
+  <div class="quiz-body">
+    <div class="q-card" id="q-card"><!-- populated by JS --></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SCREEN 3 — RESULTS
+════════════════════════════════════════ -->
+<div id="screen-results" class="screen">
+  <div class="results-card">
+    <div class="results-wordmark"><span class="wordmark-dot"></span> Crux Climate</div>
+
+    <div class="score-hero">
+      <div class="score-big" id="score-big"></div>
+      <div class="score-denom" id="score-denom"></div>
+      <div id="status-pill-wrap"></div>
+    </div>
+
+    <p class="results-msg" id="results-msg"></p>
+
+    <div>
+      <div class="breakdown-title">Question Breakdown</div>
+      <div class="breakdown-list" id="breakdown-list"></div>
+    </div>
+
+    <div class="open-feedback-section">
+      <label class="field-label" for="open-feedback">Any questions or feedback? <span style="color:var(--text-muted);font-size:11px;text-transform:none;letter-spacing:0;font-weight:500">(optional)</span></label>
+      <textarea
+        id="open-feedback"
+        class="results-textarea"
+        placeholder="Share any questions, thoughts, or feedback about the training..."
+      ></textarea>
+    </div>
+
+    <div class="results-actions" id="results-actions"><!-- populated by JS --></div>
+    <p class="submit-note" id="submit-note"></p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ════════════════════════════════════════
+     SCRIPT
+════════════════════════════════════════ -->
+<script>
+// ── CONFIG — replace with your deployed Apps Script URL ──────────────────────
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+// ── Quiz data ─────────────────────────────────────────────────────────────────
+const QUESTIONS = [
+  {
+    category: 'Tool Approval',
+    text: 'You find an AI tool online that looks perfect for summarizing your meeting notes. It\'s not on the approved tools list. What should you do?',
+    options: [
+      'Use it anyway — it\'s just meeting notes, not client data',
+      'Submit a tool request in #ops-requests and wait for security/legal review',
+      'Ask a colleague if they\'ve used it before and go from there',
+      'Use it with your personal account so it doesn\'t touch Crux systems',
+    ],
+    correct: 1,
+    feedbackCorrect: 'That\'s right. All new tools require a security and legal review before use — even if they seem low-risk. Submit a request in #ops-requests and the review typically takes a few business days, not weeks.',
+    feedbackWrong: 'Even for seemingly low-risk use cases, all new tools must go through security and legal review. Meeting notes often contain client names, deal terms, and internal strategy — all of which are sensitive. Submit a request in #ops-requests before using any unapproved tool.',
+  },
+  {
+    category: 'Account Usage',
+    text: 'You want to try a quick experiment with an approved AI tool over the weekend. Which credentials should you use?',
+    options: [
+      'Your personal email — it\'s just an experiment',
+      'Your SSO with your Crux Google Workspace authenticator',
+      'Create a new throwaway account for testing',
+      'Any account is fine as long as you don\'t input client data',
+    ],
+    correct: 1,
+    feedbackCorrect: 'Correct. Always use your Crux credentials or SSO for any AI tool that could touch Crux work — even experiments. This ensures data stays within Crux\'s security perimeter and that we maintain visibility into tool usage.',
+    feedbackWrong: 'Always use your @cruxclimate.com credentials or SSO for any approved AI tool, even for weekend experiments. Personal accounts bypass our security controls, and throwaway accounts create shadow IT that we can\'t monitor or protect.',
+  },
+  {
+    category: 'Client Data',
+    text: 'You\'re building a workflow that reads company names from HubSpot and feeds them into an AI tool to draft outreach emails. Before you proceed, what\'s the most important question to ask yourself?',
+    options: [
+      'Is this going to save me enough time to be worth building?',
+      'Who can see where this data ends up?',
+      'Has anyone on the team built something similar?',
+      'Will this workflow scale to handle our full contact list?',
+    ],
+    correct: 1,
+    feedbackCorrect: 'Exactly. The other options aren\'t bad questions to ask yourself — whether it\'s worth the time, whether someone\'s built it before, and whether it scales are all valuable things to consider. But they\'re secondary. The most critical question when working with shared data is always: who can see where this data ends up? Data privacy comes first. If anyone outside Crux could access the output, that\'s a hard stop — everything else comes after you\'ve cleared that bar.',
+    feedbackWrong: 'The other options aren\'t bad questions to ask yourself — whether it\'s worth the time, whether someone\'s built it before, and whether it scales are all valuable things to consider. But they\'re secondary. The most critical question when working with shared data is always: who can see where this data ends up? Data privacy comes first. If anyone outside Crux could access the output, that\'s a hard stop — everything else comes after you\'ve cleared that bar.',
+  },
+  {
+    category: 'Production Systems',
+    text: 'You\'ve built an AI-powered automation that updates deal stages in HubSpot based on email signals. You\'re confident it works. What\'s the next step?',
+    options: [
+      'Turn it on — you\'ve tested it thoroughly',
+      'Run it for a week on a small subset of deals to validate',
+      'Get explicit Ops team approval before enabling any write access to production',
+      'Share it in #ai-exploration and get peer feedback first',
+    ],
+    correct: 2,
+    feedbackCorrect: 'Right. Write access to production systems (HubSpot, Supabase, databases) always requires explicit Ops team approval. No exceptions — even if you\'ve tested thoroughly. Route through #ops-requests.',
+    feedbackWrong: 'No matter how well-tested your automation is, writing to production systems (HubSpot, Supabase, databases) requires explicit Ops team approval. This protects the integrity of our shared data. Submit your automation for Ops review via #ops-requests before enabling it.',
+  },
+  {
+    category: 'Data Verification',
+    text: 'A colleague builds a beautiful dashboard in Claude that pulls HubSpot and product data into a single view. They share it with the team as a daily-use tool. What\'s the concern?',
+    options: [
+      'Claude artifacts don\'t automatically refresh data — it\'s a static snapshot, not a live dashboard',
+      'The dashboard probably doesn\'t look professional enough for daily use',
+      'Claude can\'t access HubSpot data at all',
+      'Nothing — this is a great example of AI experimentation',
+    ],
+    correct: 0,
+    feedbackCorrect: 'Exactly right. AI-generated artifacts are static snapshots — they don\'t auto-refresh or stay connected to live data sources. For daily-use dashboards with live data, use Omni. AI tools are great for prototyping and exploration, but production reporting belongs in our business intelligence stack.',
+    feedbackWrong: 'The key issue is that Claude artifacts are static snapshots — they don\'t auto-refresh from HubSpot or any other data source. If someone uses it daily, they\'ll be looking at stale data without knowing it. For live dashboards, use Omni. This is a real scenario that happened at Crux!',
+  },
+  {
+    category: 'API Keys & Data Access',
+    text: 'You\'re building a prototype app and you want to pull in data from HubSpot. What should you do?',
+    options: [
+      'Request a read-only API key',
+      'Download HubSpot data into an Excel export and then upload it to your personal ChatGPT account',
+      'Use the HubSpot MCP connector that is built into Claude',
+      'Just give up',
+    ],
+    correct: 2,
+    feedbackCorrect: 'Correct. The HubSpot MCP connector in Claude is a safe and easy way to build a prototype app off of HubSpot data.',
+    feedbackWrong: 'The HubSpot MCP connector in Claude is a safe and easy way to build a prototype app off of HubSpot data.',
+  },
+  {
+    category: 'Deploying Apps',
+    text: 'You\'ve built a useful internal tool using AI and want to share it with the broader team. What\'s the right approach?',
+    options: [
+      'Deploy it to a free hosting service and share the link in Slack',
+      'Host it locally and share a video recording of you running it on your device; route through #ops-requests for proper deployment review',
+    ],
+    correct: 1,
+    feedbackCorrect: 'That\'s right. For now, host prototypes locally. When something is ready for broader use, submit it through #ops-requests so Ops can evaluate it for production readiness, security, and proper hosting. A shared deployment environment is coming soon.',
+    feedbackWrong: 'Don\'t deploy to external hosting services without review — this could expose internal tools and data. The right path is to host locally for now and route through #ops-requests when it\'s ready for broader use. Ops will evaluate security, hosting, and production readiness.',
+  },
+  {
+    category: 'L&D Budget',
+    text: 'You want to use the $5K AI learning and development budget. Which of the following is an approved use?',
+    options: [
+      'Purchasing a license for a new AI tool you want to try',
+      'Enrolling in an online AI course or hiring an AI coach',
+      'Paying for premium API access to build a prototype',
+      'Buying a GPU to run local models',
+    ],
+    correct: 1,
+    feedbackCorrect: 'Correct! The $5K L&D budget is specifically for learning: courses, coaching, books, conferences — your personal AI skill development. New tools, API access, and hardware go through separate procurement channels.',
+    feedbackWrong: 'The $5K budget is strictly for learning and development — courses, coaching, books, and conferences. It is not for tool licenses, API access, or hardware. New tools must go through the standard security/legal review process via #ops-requests.',
+  },
+  {
+    category: 'Getting Help',
+    text: 'You\'re stuck on an AI project and not sure if your approach is safe. What\'s the best first step?',
+    options: [
+      'Post your question in #ai-exploration or come to AI Office Hours',
+      'Just keep going — you\'ll figure it out and can fix issues later',
+      'Ask ChatGPT for advice on Crux\'s security policies',
+      'Stop working on it entirely until someone proactively checks on you',
+    ],
+    correct: 0,
+    feedbackCorrect: 'That\'s the spirit. #ai-exploration and AI Office Hours exist exactly for this — ask early, ask often. The Ops team, PDE team, and our AI-savvy colleagues are there to help you move fast without breaking things.',
+    feedbackWrong: 'When in doubt, ask! Post in #ai-exploration or drop into AI Office Hours. Don\'t push forward unsure about safety, and definitely don\'t ask an external AI tool about our internal security policies. We want you experimenting boldly — with support.',
+  },
+  {
+    category: 'Putting It All Together',
+    text: 'You\'re preparing for a client meeting and want to save time. You copy a list of deal terms and counterparty names from HubSpot into an AI tool you found through a Google search (not on the approved list) to generate a prep summary. You log in with your personal Gmail account because SSO isn\'t available. The summary looks great, so you paste it into a Slack channel. How many potential guideline violations are in this scenario?',
+    options: [
+      'One — the unapproved tool',
+      'Two — the unapproved tool and the personal account',
+      'Three — the unapproved tool, the personal account, and pasting client data into an unvetted tool',
+      'None — the output was just a summary, and meeting prep is a legitimate use case',
+    ],
+    correct: 2,
+    feedbackCorrect: 'Sharp eye — there are three issues here. (1) The tool isn\'t on the approved list. (2) Using a personal Gmail bypasses Crux\'s security perimeter. (3) Copying deal terms and counterparty names into an unvetted tool means sensitive client data is now in a system we don\'t control. The meeting prep use case is totally legitimate — it\'s the execution that needs fixing.',
+    feedbackWrong: 'There are actually three violations. (1) The tool isn\'t approved — needs a security/legal review via #ops-requests. (2) Logging in with personal Gmail puts the data outside Crux\'s security perimeter. (3) Deal terms and counterparty names are sensitive client data — copying them into an unvetted tool risks exposure. The meeting prep goal is great! Just use an approved tool with your Crux credentials.',
+  },
+];
+
+const LETTERS = ['A', 'B', 'C', 'D', 'E'];
+const PASS_THRESHOLD = 8;
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let state = {
+  email: '',
+  currentQ: 0,
+  answers: Array(QUESTIONS.length).fill(null),
+  answered: false,
+};
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// ── Intro ─────────────────────────────────────────────────────────────────────
+function startQuiz() {
+  const input = document.getElementById('email-input');
+  const err   = document.getElementById('email-error');
+  const email = input.value.trim().toLowerCase();
+
+  if (!email.match(/^[^\s@]+@cruxclimate\.com$/)) {
+    err.classList.add('visible');
+    input.focus();
+    return;
+  }
+
+  err.classList.remove('visible');
+  state.email     = email;
+  state.currentQ  = 0;
+  state.answers   = Array(QUESTIONS.length).fill(null);
+  state.answered  = false;
+
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+// ── Quiz ──────────────────────────────────────────────────────────────────────
+function renderQuestion() {
+  const idx  = state.currentQ;
+  const q    = QUESTIONS[idx];
+  const pct  = (idx / QUESTIONS.length) * 100;
+  const last = idx === QUESTIONS.length - 1;
+
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${idx + 1} / ${QUESTIONS.length}`;
+
+  const card = document.getElementById('q-card');
+  card.innerHTML = `
+    <div class="q-category">${q.category}</div>
+    <div class="q-meta">Question ${idx + 1} of ${QUESTIONS.length}</div>
+    <div class="q-text">${q.text}</div>
+    <ul class="options" id="options">
+      ${q.options.map((opt, i) => `
+        <li class="opt" id="opt-${i}" onclick="pick(${i})">
+          <span class="opt-badge">${LETTERS[i]}</span>
+          <span class="opt-text">${opt}</span>
+        </li>
+      `).join('')}
+    </ul>
+    <div class="feedback" id="feedback">
+      <div class="feedback-label" id="feedback-label"></div>
+      <div id="feedback-body"></div>
+    </div>
+    <button class="btn-next" id="btn-next" onclick="advance()">
+      ${last ? 'See My Results →' : 'Next Question →'}
+    </button>
+  `;
+
+  // Re-trigger animation
+  card.style.animation = 'none';
+  void card.offsetHeight;
+  card.style.animation = '';
+}
+
+function pick(optIdx) {
+  if (state.answered) return;
+  state.answered = true;
+  state.answers[state.currentQ] = optIdx;
+
+  const q       = QUESTIONS[state.currentQ];
+  const correct = q.correct;
+  const right   = optIdx === correct;
+
+  // Lock all options
+  document.querySelectorAll('.opt').forEach(el => el.classList.add('locked'));
+
+  // Style chosen
+  document.getElementById(`opt-${optIdx}`).classList.add(right ? 'is-correct' : 'is-wrong');
+
+  // Reveal correct answer if wrong
+  if (!right) {
+    document.getElementById(`opt-${correct}`).classList.add('show-answer');
+  }
+
+  // Show feedback
+  const fb = document.getElementById('feedback');
+  fb.className = `feedback ${right ? 'correct' : 'wrong'}`;
+  fb.style.display = 'block';
+  document.getElementById('feedback-label').textContent = right ? '✓ Correct' : '✗ Not quite';
+  document.getElementById('feedback-body').textContent  = right ? q.feedbackCorrect : q.feedbackWrong;
+
+  document.getElementById('btn-next').classList.add('show');
+}
+
+function advance() {
+  if (state.currentQ < QUESTIONS.length - 1) {
+    state.currentQ++;
+    state.answered = false;
+    renderQuestion();
+  } else {
+    buildResults();
+  }
+}
+
+// ── Results ───────────────────────────────────────────────────────────────────
+function calcScore() {
+  return QUESTIONS.reduce((n, q, i) => n + (state.answers[i] === q.correct ? 1 : 0), 0);
+}
+
+function buildResults() {
+  const score  = calcScore();
+  const passed = score >= PASS_THRESHOLD;
+  const pct    = Math.round(score / QUESTIONS.length * 100);
+
+  document.getElementById('progress-fill').style.width = '100%';
+
+  showScreen('screen-results');
+
+  document.getElementById('score-big').textContent   = `${score}/10`;
+  document.getElementById('score-big').className     = `score-big ${passed ? 'pass' : 'fail'}`;
+  document.getElementById('score-denom').textContent = `${pct}% — ${passed ? 'you passed!' : `${PASS_THRESHOLD} needed to pass`}`;
+
+  document.getElementById('status-pill-wrap').innerHTML = `
+    <span class="status-pill ${passed ? 'pass' : 'fail'}">
+      ${passed ? '✓ Passed' : '✗ Did not pass'}
+    </span>`;
+
+  document.getElementById('results-msg').textContent = passed
+    ? 'Great work. You\'ve got the guardrails down — now go build something awesome.'
+    : 'Not quite this time, but you\'re close. Review the question breakdown below and retake when ready — you can go again immediately.';
+
+  // Breakdown
+  document.getElementById('breakdown-list').innerHTML = QUESTIONS.map((q, i) => {
+    const ok   = state.answers[i] === q.correct;
+    const mine = state.answers[i] !== null ? LETTERS[state.answers[i]] : '—';
+    const corr = LETTERS[q.correct];
+    return `
+      <div class="breakdown-row">
+        <div class="bd-icon ${ok ? 'pass' : 'fail'}">${ok ? '✓' : '✗'}</div>
+        <div class="bd-info">
+          <div class="bd-cat">Q${i+1}: ${q.category}</div>
+          <div class="bd-ans">${ok
+            ? `Correct — ${corr}`
+            : `You chose ${mine} &nbsp;·&nbsp; Correct: ${corr}`
+          }</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Actions
+  const actions = document.getElementById('results-actions');
+  if (passed) {
+    actions.innerHTML = `<button class="btn btn-primary" onclick="submitAndFinish()">Submit & Complete →</button>`;
+    document.getElementById('submit-note').textContent = 'Your completion will be recorded when you submit.';
+  } else {
+    actions.innerHTML = `
+      <button class="btn btn-primary" onclick="submitAndRetake()">Submit & Retake →</button>
+      <button class="btn btn-outline" onclick="submitAndFinish()">Submit without retaking</button>`;
+    document.getElementById('submit-note').textContent = 'Your attempt will be recorded either way.';
+  }
+}
+
+function submitAndFinish() {
+  postToSheet(calcScore(), calcScore() >= PASS_THRESHOLD);
+  toast('Response recorded. Thanks!');
+  document.getElementById('results-actions').innerHTML =
+    `<p style="text-align:center;color:var(--success);font-weight:600;font-size:15px;">✓ Submitted — you're all set.</p>`;
+  document.getElementById('submit-note').textContent = '';
+}
+
+function submitAndRetake() {
+  postToSheet(calcScore(), false);
+  toast('Attempt recorded. Good luck!');
+  setTimeout(() => {
+    state.currentQ = 0;
+    state.answers  = Array(QUESTIONS.length).fill(null);
+    state.answered = false;
+    showScreen('screen-quiz');
+    renderQuestion();
+  }, 600);
+}
+
+// ── Google Sheets ─────────────────────────────────────────────────────────────
+function postToSheet(score, passed) {
+  if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    console.warn('Apps Script URL not configured — skipping submission.');
+    return;
+  }
+
+  const payload = {
+    timestamp:    new Date().toISOString(),
+    email:        state.email,
+    score:        score,
+    outOf:        QUESTIONS.length,
+    passed:       passed ? 'Yes' : 'No',
+    openFeedback: (document.getElementById('open-feedback') || {}).value || '',
+  };
+
+  // Add individual answers
+  QUESTIONS.forEach((q, i) => {
+    payload[`Q${i+1}`] = state.answers[i] !== null ? LETTERS[state.answers[i]] : '—';
+  });
+
+  fetch(APPS_SCRIPT_URL, {
+    method:  'POST',
+    mode:    'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify(payload),
+  }).catch(err => console.error('Submission error:', err));
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('visible');
+  setTimeout(() => el.classList.remove('visible'), 2800);
+}
+
+// ── Enter key on email ────────────────────────────────────────────────────────
+document.getElementById('email-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') startQuiz();
+});
+</script>
+</body>
+</html>
