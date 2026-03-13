@@ -10,9 +10,19 @@
       "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
       "name": "Quiz Submission",
       "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
+      "typeVersion": 1,
       "position": [240, 300],
       "webhookId": "f1e2d3c4-b5a6-7890-fedc-ba9876543210"
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\n\nreturn [{\n  json: {\n    'Timestamp':    d.timestamp    || '',\n    'Email':        d.email        || '',\n    'Score':        d.score        || '',\n    'Out Of':       d.outOf        || '',\n    'Passed':       d.passed       || '',\n    'Q1':           d.Q1           || '',\n    'Q2':           d.Q2           || '',\n    'Q3':           d.Q3           || '',\n    'Q4':           d.Q4           || '',\n    'Q5':           d.Q5           || '',\n    'Q6':           d.Q6           || '',\n    'Q7':           d.Q7           || '',\n    'Q8':           d.Q8           || '',\n    'Q9':           d.Q9           || '',\n    'Q10':          d.Q10          || '',\n    'Open Feedback': d.openFeedback || ''\n  }\n}];"
+      },
+      "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+      "name": "Extract Fields",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
     },
     {
       "parameters": {
@@ -39,7 +49,7 @@
       "name": "Add to Google Sheet",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
-      "position": [480, 300],
+      "position": [680, 300],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
@@ -50,6 +60,17 @@
   ],
   "connections": {
     "Quiz Submission": {
+      "main": [
+        [
+          {
+            "node": "Extract Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Fields": {
       "main": [
         [
           {

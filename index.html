@@ -1012,10 +1012,11 @@ function postToSheet(score, passed) {
 
   fetch(APPS_SCRIPT_URL, {
     method:  'POST',
-    mode:    'no-cors',
-    headers: { 'Content-Type': 'text/plain' },
+    headers: { 'Content-Type': 'application/json' },
     body:    JSON.stringify(payload),
-  }).catch(err => console.error('Submission error:', err));
+  })
+  .then(res => res.json().then(data => console.log('Submission success:', data)))
+  .catch(err => console.error('Submission error:', err));
 }
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
