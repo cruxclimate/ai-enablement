@@ -633,11 +633,6 @@
 
     <p class="results-msg" id="results-msg"></p>
 
-    <div>
-      <div class="breakdown-title">Question Breakdown</div>
-      <div class="breakdown-list" id="breakdown-list"></div>
-    </div>
-
     <div class="open-feedback-section">
       <label class="field-label" for="open-feedback">Any questions or feedback? <span style="color:var(--text-muted);font-size:11px;text-transform:none;letter-spacing:0;font-weight:500">(optional)</span></label>
       <textarea
@@ -937,24 +932,6 @@ function buildResults() {
   document.getElementById('results-msg').textContent = passed
     ? 'Great work. You\'ve got the guardrails down — now go build something awesome.'
     : 'Not quite this time, but you\'re close. Review the question breakdown below and retake when ready — you can go again immediately.';
-
-  // Breakdown
-  document.getElementById('breakdown-list').innerHTML = QUESTIONS.map((q, i) => {
-    const ok   = state.answers[i] === q.correct;
-    const mine = state.answers[i] !== null ? LETTERS[state.answers[i]] : '—';
-    const corr = LETTERS[q.correct];
-    return `
-      <div class="breakdown-row">
-        <div class="bd-icon ${ok ? 'pass' : 'fail'}">${ok ? '✓' : '✗'}</div>
-        <div class="bd-info">
-          <div class="bd-cat">Q${i+1}: ${q.category}</div>
-          <div class="bd-ans">${ok
-            ? `Correct — ${corr}`
-            : `You chose ${mine} &nbsp;·&nbsp; Correct: ${corr}`
-          }</div>
-        </div>
-      </div>`;
-  }).join('');
 
   // Actions
   const actions = document.getElementById('results-actions');
