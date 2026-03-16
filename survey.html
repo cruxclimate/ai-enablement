@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 101 Session — Follow-Up Survey</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:            #08091A;
+      --surface:       #111228;
+      --surface2:      #171830;
+      --border:        #1E2040;
+      --primary:       #6366F1;
+      --primary-glow:  rgba(99,102,241,0.18);
+      --secondary:     #8B5CF6;
+      --accent:        #06B6D4;
+      --success:       #10B981;
+      --success-bg:    rgba(16,185,129,0.1);
+      --text:          #EEF2FF;
+      --text-sec:      #A5B4FC;
+      --text-muted:    #64748B;
+      --radius:        10px;
+      --transition:    0.18s ease;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── SCREENS ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── INTRO SCREEN ── */
+    #screen-intro {
+      min-height: 100vh;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.1) 0%, transparent 60%);
+    }
+    #screen-intro.active { display: flex; }
+
+    .intro-card { width: 100%; max-width: 540px; }
+
+    .logo {
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-sec); margin-bottom: 48px;
+    }
+
+    .intro-title {
+      font-size: clamp(26px, 5vw, 38px);
+      font-weight: 800; line-height: 1.15;
+      background: linear-gradient(135deg, #fff 0%, #A5B4FC 50%, #7C3AED 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 8px;
+    }
+
+    .intro-subtitle {
+      font-size: 16px; font-weight: 500;
+      color: var(--text-sec); margin-bottom: 32px;
+    }
+
+    .intro-meta {
+      display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 28px;
+    }
+    .meta-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--text-muted);
+    }
+    .meta-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--primary);
+    }
+
+    .intro-desc {
+      font-size: 14px; color: #94A3B8; line-height: 1.7;
+      padding: 18px 20px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); border-left: 3px solid var(--primary);
+      margin-bottom: 36px;
+    }
+
+    .field-label {
+      display: block; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--text-sec); margin-bottom: 8px;
+    }
+
+    .text-input {
+      width: 100%; padding: 13px 16px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text);
+      font-size: 15px; font-family: inherit; outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      margin-bottom: 6px;
+    }
+    .text-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .text-input::placeholder { color: var(--text-muted); }
+
+    .field-hint {
+      font-size: 12px; color: var(--text-muted); margin-bottom: 24px;
+    }
+
+    .btn-primary {
+      width: 100%; padding: 15px 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border: none; border-radius: var(--radius);
+      color: white; font-size: 15px; font-weight: 600;
+      font-family: inherit; cursor: pointer;
+      transition: opacity var(--transition), transform var(--transition);
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* ── SURVEY SCREEN ── */
+    #screen-survey {
+      padding: 0 0 80px;
+    }
+
+    .survey-header {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(8,9,26,0.95); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+    }
+    .survey-header-inner {
+      max-width: 660px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .header-logo {
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-sec); white-space: nowrap;
+    }
+    .header-title {
+      font-size: 13px; color: var(--text-muted);
+    }
+
+    .survey-body {
+      max-width: 660px; margin: 0 auto; padding: 48px 20px 0;
+    }
+
+    /* ── QUESTION BLOCKS ── */
+    .q-block { margin-bottom: 48px; }
+
+    .q-label {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); background: rgba(6,182,212,0.08);
+      border: 1px solid rgba(6,182,212,0.18);
+      padding: 3px 10px; border-radius: 4px; margin-bottom: 14px;
+    }
+
+    .q-text {
+      font-size: 18px; font-weight: 600; line-height: 1.5;
+      color: var(--text); margin-bottom: 20px;
+    }
+
+    /* ── RATING SCALE ── */
+    .rating-wrap { display: flex; flex-direction: column; gap: 12px; }
+
+    .rating-scale {
+      display: flex; gap: 8px;
+    }
+
+    .rating-btn {
+      flex: 1; padding: 14px 8px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text-muted);
+      font-size: 18px; font-weight: 700; font-family: inherit;
+      cursor: pointer; text-align: center;
+      transition: all var(--transition);
+    }
+    .rating-btn:hover { border-color: var(--primary); color: var(--text); background: var(--surface2); }
+    .rating-btn.selected {
+      background: var(--primary-glow); border-color: var(--primary);
+      color: var(--text);
+    }
+
+    .rating-labels {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--text-muted); padding: 0 2px;
+    }
+
+    /* ── CHECKBOXES ── */
+    .checkbox-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .checkbox-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 13px 16px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); cursor: pointer;
+      transition: all var(--transition); user-select: none;
+    }
+    .checkbox-item:hover { border-color: var(--primary); background: var(--surface2); }
+    .checkbox-item.checked {
+      background: var(--primary-glow); border-color: var(--primary);
+    }
+
+    .checkbox-item input[type="checkbox"] { display: none; }
+
+    .checkbox-box {
+      width: 18px; height: 18px; min-width: 18px;
+      border-radius: 5px; border: 1.5px solid var(--border);
+      background: var(--surface2); margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition); font-size: 11px; color: white;
+    }
+    .checkbox-item.checked .checkbox-box {
+      background: var(--primary); border-color: var(--primary);
+    }
+    .checkbox-item.checked .checkbox-box::after { content: '✓'; }
+
+    .checkbox-text { font-size: 14px; line-height: 1.5; padding-top: 1px; }
+
+    .other-input-wrap {
+      display: none; margin-top: 8px;
+    }
+    .other-input-wrap.visible { display: block; }
+    .other-input {
+      width: 100%; padding: 11px 14px;
+      background: var(--surface); border: 1px solid var(--primary);
+      border-radius: var(--radius); color: var(--text);
+      font-size: 14px; font-family: inherit; outline: none;
+    }
+    .other-input:focus { box-shadow: 0 0 0 3px var(--primary-glow); }
+    .other-input::placeholder { color: var(--text-muted); }
+
+    /* ── FREE TEXT ── */
+    .survey-textarea {
+      width: 100%; padding: 14px 16px; min-height: 110px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text);
+      font-size: 15px; font-family: inherit; outline: none; resize: vertical;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .survey-textarea:focus {
+      border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .survey-textarea::placeholder { color: var(--text-muted); }
+
+    .optional-tag {
+      font-size: 11px; font-weight: 500;
+      color: var(--text-muted); letter-spacing: 0; text-transform: none;
+      margin-left: 6px;
+    }
+
+    /* ── SUBMIT AREA ── */
+    .submit-area { margin-top: 8px; }
+    .submit-note {
+      font-size: 12px; color: var(--text-muted);
+      margin-top: 12px; text-align: center;
+    }
+
+    /* ── THANK YOU SCREEN ── */
+    #screen-thanks {
+      min-height: 100vh; display: none;
+      align-items: center; justify-content: center;
+      padding: 48px 20px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.08) 0%, transparent 55%);
+    }
+    #screen-thanks.active { display: flex; }
+
+    .thanks-card {
+      width: 100%; max-width: 480px; text-align: center;
+    }
+    .thanks-logo {
+      font-size: 13px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-sec); margin-bottom: 48px;
+    }
+    .thanks-icon {
+      font-size: 48px; margin-bottom: 24px;
+    }
+    .thanks-title {
+      font-size: 28px; font-weight: 800; margin-bottom: 12px;
+      background: linear-gradient(135deg, #10B981, #34D399);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .thanks-msg {
+      font-size: 15px; color: #94A3B8; line-height: 1.7;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 11px 20px;
+      font-size: 13px; font-weight: 500;
+      transition: transform 0.3s ease; z-index: 100; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 480px) {
+      .rating-btn { padding: 12px 4px; font-size: 16px; }
+      .q-text { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── INTRO ── -->
+<div id="screen-intro" class="screen active">
+  <div class="intro-card">
+    <div class="logo">Crux Climate</div>
+    <h1 class="intro-title">AI 101 Session</h1>
+    <p class="intro-subtitle">Follow-Up Survey</p>
+
+    <div class="intro-meta">
+      <span class="meta-item"><span class="meta-dot"></span> 5 questions</span>
+      <span class="meta-item"><span class="meta-dot"></span> Under 90 seconds</span>
+      <span class="meta-item"><span class="meta-dot"></span> Anonymous</span>
+    </div>
+
+    <div class="intro-desc">
+      Thanks for attending the AI 101 session. Your feedback helps us make the next one better — and shapes what we build for 201. Takes less than 90 seconds.
+    </div>
+
+    <button class="btn-primary" onclick="startSurvey()">Start Survey →</button>
+  </div>
+</div>
+
+<!-- ── SURVEY ── -->
+<div id="screen-survey" class="screen">
+  <div class="survey-header">
+    <div class="survey-header-inner">
+      <span class="header-logo">Crux</span>
+      <span class="header-title">AI 101 — Follow-Up Survey</span>
+    </div>
+  </div>
+
+  <div class="survey-body">
+
+    <!-- Q1: Rating -->
+    <div class="q-block">
+      <div class="q-label">Q1 — Session Value</div>
+      <div class="q-text">How valuable was this session for you?</div>
+      <div class="rating-wrap">
+        <div class="rating-scale" id="rating-scale">
+          <button class="rating-btn" onclick="selectRating(1)">1</button>
+          <button class="rating-btn" onclick="selectRating(2)">2</button>
+          <button class="rating-btn" onclick="selectRating(3)">3</button>
+          <button class="rating-btn" onclick="selectRating(4)">4</button>
+          <button class="rating-btn" onclick="selectRating(5)">5</button>
+        </div>
+        <div class="rating-labels">
+          <span>Not a great use of my time</span>
+          <span>Excellent use of my time</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2: Most useful -->
+    <div class="q-block">
+      <div class="q-label">Q2 — Most Useful</div>
+      <div class="q-text">Which part of the session was most useful to you?</div>
+      <div class="checkbox-list" id="q2-list">
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Why Crux cares about AI / the fluency framework">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Why Crux cares about AI / the fluency framework</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="How AI works (LLMs, models, context windows, hallucinations)">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">How AI works (LLMs, models, context windows, hallucinations)</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="How to use AI well (intern analogy, CARE framework, prompting)">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">How to use AI well (intern analogy, CARE framework, prompting)</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Your toolkit at Crux (Claude features, other tools, setup checklist)">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Your toolkit at Crux (Claude features, other tools, setup checklist)</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="The guardrails (privacy, governance framework, six rules)">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">The guardrails (privacy, governance framework, six rules)</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Workshop (hands-on time)">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Workshop (hands-on time)</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Q3: Tools to try -->
+    <div class="q-block">
+      <div class="q-label">Q3 — Tools to Try</div>
+      <div class="q-text">What AI tool or feature are you most likely to try this week?</div>
+      <div class="checkbox-list" id="q3-list">
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Claude Chat for drafting/research">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Claude Chat for drafting / research</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Claude Skills (building a reusable prompt)">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Claude Skills (building a reusable prompt)</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Claude Connectors (Drive, Slack, HubSpot)">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Claude Connectors (Drive, Slack, HubSpot)</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Claude Deep Research">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Claude Deep Research</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Slack AI">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Slack AI</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Omni AI">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Omni AI</span>
+        </label>
+        <label class="checkbox-item" id="q3-other-item" onclick="toggleCheck(this); toggleOther('q3-other')">
+          <input type="checkbox" value="Other">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Other (please specify)</span>
+        </label>
+        <div class="other-input-wrap" id="q3-other-wrap">
+          <input type="text" class="other-input" id="q3-other" placeholder="What tool or feature?" onclick="event.stopPropagation()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4: Future content -->
+    <div class="q-block">
+      <div class="q-label">Q4 — Future Content</div>
+      <div class="q-text">What additional AI content would you be interested in seeing later in 2026?</div>
+      <div class="checkbox-list" id="q4-list">
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Deeper dive on Claude (Projects, Skills, Connectors)">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Deeper dive on Claude (Projects, Skills, Connectors)</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Automation & workflows">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Automation &amp; workflows</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Agents">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Agents</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Data analysis with AI">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Data analysis with AI</span>
+        </label>
+        <label class="checkbox-item" onclick="toggleCheck(this)">
+          <input type="checkbox" value="Prompting techniques">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Prompting techniques</span>
+        </label>
+        <label class="checkbox-item" id="q4-other-item" onclick="toggleCheck(this); toggleOther('q4-other')">
+          <input type="checkbox" value="Other">
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Other (please specify)</span>
+        </label>
+        <div class="other-input-wrap" id="q4-other-wrap">
+          <input type="text" class="other-input" id="q4-other" placeholder="What topic?" onclick="event.stopPropagation()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5: Open feedback -->
+    <div class="q-block">
+      <div class="q-label">Q5 — Open Feedback <span class="optional-tag">(optional)</span></div>
+      <div class="q-text">Any other feedback?</div>
+      <textarea
+        id="q5-feedback"
+        class="survey-textarea"
+        placeholder="Anything else on your mind — questions, suggestions, things that didn't land..."
+      ></textarea>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-area">
+      <button class="btn-primary" onclick="submitSurvey()">Submit Feedback →</button>
+      <p class="submit-note">Anonymous · responses go directly to the Crux AI enablement team</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── THANK YOU ── -->
+<div id="screen-thanks" class="screen">
+  <div class="thanks-card">
+    <div class="thanks-logo">Crux Climate</div>
+    <div class="thanks-icon">✦</div>
+    <div class="thanks-title">Thanks for the feedback</div>
+    <p class="thanks-msg">
+      Your responses help shape what comes next — AI 201, office hours, and everything in between.
+      Keep experimenting, and drop any questions in <strong>#ai-exploration</strong>.
+    </p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const WEBHOOK_URL = 'https://crux-ops.app.n8n.cloud/webhook/crux-101-survey';
+
+  let state = { rating: null };
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function startSurvey() {
+    showScreen('screen-survey');
+  }
+
+  function selectRating(val) {
+    state.rating = val;
+    document.querySelectorAll('.rating-btn').forEach((btn, i) => {
+      btn.classList.toggle('selected', i + 1 === val);
+    });
+  }
+
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    const cb = el.querySelector('input[type="checkbox"]');
+    if (cb) cb.checked = !cb.checked;
+  }
+
+  function toggleOther(inputId) {
+    const wrap = document.getElementById(inputId + '-wrap');
+    const item = document.getElementById(inputId.replace('other', 'other-item') + '');
+    // find parent checkbox-item
+    const parentItem = document.getElementById(inputId + '-wrap').previousElementSibling
+      ? null : null;
+    // check if the Other checkbox is now checked
+    const otherItem = wrap.previousElementSibling;
+    const cb = otherItem ? otherItem.querySelector('input') : null;
+    const isChecked = cb ? cb.checked : false;
+    wrap.classList.toggle('visible', !isChecked); // toggled before cb updates, so invert
+  }
+
+  function getCheckboxValues(listId) {
+    const items = document.querySelectorAll(`#${listId} .checkbox-item.checked`);
+    return Array.from(items).map(item => {
+      const cb = item.querySelector('input[type="checkbox"]');
+      return cb ? cb.value : '';
+    }).filter(Boolean);
+  }
+
+  function submitSurvey() {
+    const q2 = getCheckboxValues('q2-list');
+    const q3 = getCheckboxValues('q3-list');
+    const q4 = getCheckboxValues('q4-list');
+
+    // Handle "Other" text
+    const q3OtherText = document.getElementById('q3-other').value.trim();
+    const q4OtherText = document.getElementById('q4-other').value.trim();
+
+    const q3Final = q3.map(v => v === 'Other' && q3OtherText ? `Other: ${q3OtherText}` : v);
+    const q4Final = q4.map(v => v === 'Other' && q4OtherText ? `Other: ${q4OtherText}` : v);
+
+    const payload = {
+      timestamp:      new Date().toISOString(),
+      q1_rating:      state.rating || '',
+      q2_useful:      q2.join(' | '),
+      q3_tools:       q3Final.join(' | '),
+      q4_content:     q4Final.join(' | '),
+      q5_feedback:    document.getElementById('q5-feedback').value.trim()
+    };
+
+    fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(() => {}); // silent fail — response still shown
+
+    showScreen('screen-thanks');
+  }
+</script>
+</body>
+</html>

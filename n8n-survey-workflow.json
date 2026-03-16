@@ -1,0 +1,66 @@
+{
+  "name": "Crux AI 101 Survey — Response Collector",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "crux-101-survey",
+        "options": {}
+      },
+      "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+      "name": "Survey Submission",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "d4e5f6a7-b8c9-0123-defa-234567890123"
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\n\nreturn [{\n  json: {\n    'Timestamp':    d.timestamp   || new Date().toISOString(),\n    'Q1 Rating':    d.q1_rating   || '',\n    'Q2 Most Useful': d.q2_useful || '',\n    'Q3 Tools':     d.q3_tools    || '',\n    'Q4 Content':   d.q4_content  || '',\n    'Q5 Feedback':  d.q5_feedback || ''\n  }\n}];"
+      },
+      "id": "e5f6a7b8-c9d0-1234-efab-345678901234",
+      "name": "Extract Fields",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Eu6hfd3FhzQlVJfDMA88Xzs3eU5MXtO8EOMjs3X32C8",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "AI 101 Survey",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "f6a7b8c9-d0e1-2345-fabc-456789012345",
+      "name": "Add to Google Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [680, 300]
+    }
+  ],
+  "connections": {
+    "Survey Submission": {
+      "main": [[{ "node": "Extract Fields", "type": "main", "index": 0 }]]
+    },
+    "Extract Fields": {
+      "main": [[{ "node": "Add to Google Sheet", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "tags": []
+}
