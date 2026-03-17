@@ -206,7 +206,7 @@
       transition: all var(--transition); user-select: none;
     }
     .checkbox-item:hover { border-color: var(--primary); background: var(--surface2); }
-    .checkbox-item.checked {
+    .checkbox-item:has(input:checked) {
       background: var(--primary-glow); border-color: var(--primary);
     }
 
@@ -219,10 +219,10 @@
       display: flex; align-items: center; justify-content: center;
       transition: all var(--transition); font-size: 11px; color: white;
     }
-    .checkbox-item.checked .checkbox-box {
+    .checkbox-item:has(input:checked) .checkbox-box {
       background: var(--primary); border-color: var(--primary);
     }
-    .checkbox-item.checked .checkbox-box::after { content: '✓'; }
+    .checkbox-item:has(input:checked) .checkbox-box::after { content: '✓'; }
 
     .checkbox-text { font-size: 14px; line-height: 1.5; padding-top: 1px; }
 
@@ -369,32 +369,32 @@
       <div class="q-label">Q2 — Most Useful</div>
       <div class="q-text">Which part of the session was most useful to you?</div>
       <div class="checkbox-list" id="q2-list">
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Why Crux cares about AI / the fluency framework">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Why Crux cares about AI / the fluency framework</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="How AI works (LLMs, models, context windows, hallucinations)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">How AI works (LLMs, models, context windows, hallucinations)</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="How to use AI well (intern analogy, CARE framework, prompting)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">How to use AI well (intern analogy, CARE framework, prompting)</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Your toolkit at Crux (Claude features, other tools, setup checklist)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Your toolkit at Crux (Claude features, other tools, setup checklist)</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="The guardrails (privacy, governance framework, six rules)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">The guardrails (privacy, governance framework, six rules)</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Workshop (hands-on time)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Workshop (hands-on time)</span>
@@ -407,43 +407,43 @@
       <div class="q-label">Q3 — Tools to Try</div>
       <div class="q-text">What AI tool or feature are you most likely to try this week?</div>
       <div class="checkbox-list" id="q3-list">
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Claude Chat for drafting/research">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Claude Chat for drafting / research</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Claude Skills (building a reusable prompt)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Claude Skills (building a reusable prompt)</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Claude Connectors (Drive, Slack, HubSpot)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Claude Connectors (Drive, Slack, HubSpot)</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Claude Deep Research">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Claude Deep Research</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Slack AI">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Slack AI</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Omni AI">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Omni AI</span>
         </label>
-        <label class="checkbox-item" id="q3-other-item" onclick="toggleCheck(this); toggleOther('q3-other')">
+        <label class="checkbox-item" id="q3-other-item">
           <input type="checkbox" value="Other">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Other (please specify)</span>
         </label>
         <div class="other-input-wrap" id="q3-other-wrap">
-          <input type="text" class="other-input" id="q3-other" placeholder="What tool or feature?" onclick="event.stopPropagation()">
+          <input type="text" class="other-input" id="q3-other" placeholder="What tool or feature?">
         </div>
       </div>
     </div>
@@ -453,38 +453,38 @@
       <div class="q-label">Q4 — Future Content</div>
       <div class="q-text">What additional AI content would you be interested in seeing later in 2026?</div>
       <div class="checkbox-list" id="q4-list">
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Deeper dive on Claude (Projects, Skills, Connectors)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Deeper dive on Claude (Projects, Skills, Connectors)</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Automation & workflows">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Automation &amp; workflows</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Agents">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Agents</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Data analysis with AI">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Data analysis with AI</span>
         </label>
-        <label class="checkbox-item" onclick="toggleCheck(this)">
+        <label class="checkbox-item">
           <input type="checkbox" value="Prompting techniques">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Prompting techniques</span>
         </label>
-        <label class="checkbox-item" id="q4-other-item" onclick="toggleCheck(this); toggleOther('q4-other')">
+        <label class="checkbox-item" id="q4-other-item">
           <input type="checkbox" value="Other">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Other (please specify)</span>
         </label>
         <div class="other-input-wrap" id="q4-other-wrap">
-          <input type="text" class="other-input" id="q4-other" placeholder="What topic?" onclick="event.stopPropagation()">
+          <input type="text" class="other-input" id="q4-other" placeholder="What topic?">
         </div>
       </div>
     </div>
@@ -546,31 +546,19 @@
     });
   }
 
-  function toggleCheck(el) {
-    el.classList.toggle('checked');
-    const cb = el.querySelector('input[type="checkbox"]');
-    if (cb) cb.checked = !cb.checked;
-  }
-
-  function toggleOther(inputId) {
-    const wrap = document.getElementById(inputId + '-wrap');
-    const item = document.getElementById(inputId.replace('other', 'other-item') + '');
-    // find parent checkbox-item
-    const parentItem = document.getElementById(inputId + '-wrap').previousElementSibling
-      ? null : null;
-    // check if the Other checkbox is now checked
-    const otherItem = wrap.previousElementSibling;
-    const cb = otherItem ? otherItem.querySelector('input') : null;
-    const isChecked = cb ? cb.checked : false;
-    wrap.classList.toggle('visible', !isChecked); // toggled before cb updates, so invert
-  }
+  // Wire up "Other" text field toggles
+  ['q3', 'q4'].forEach(q => {
+    const item = document.getElementById(`${q}-other-item`);
+    if (item) {
+      item.querySelector('input[type="checkbox"]').addEventListener('change', function() {
+        document.getElementById(`${q}-other-wrap`).classList.toggle('visible', this.checked);
+      });
+    }
+  });
 
   function getCheckboxValues(listId) {
-    const items = document.querySelectorAll(`#${listId} .checkbox-item.checked`);
-    return Array.from(items).map(item => {
-      const cb = item.querySelector('input[type="checkbox"]');
-      return cb ? cb.value : '';
-    }).filter(Boolean);
+    const inputs = document.querySelectorAll(`#${listId} input[type="checkbox"]:checked`);
+    return Array.from(inputs).map(cb => cb.value).filter(Boolean);
   }
 
   function submitSurvey() {
