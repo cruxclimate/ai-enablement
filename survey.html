@@ -210,7 +210,8 @@
       background: var(--primary-glow); border-color: var(--primary);
     }
 
-    .checkbox-item input[type="checkbox"] { display: none; }
+    .checkbox-item input[type="checkbox"],
+    .checkbox-item input[type="radio"] { display: none; }
 
     .checkbox-box {
       width: 18px; height: 18px; min-width: 18px;
@@ -370,32 +371,32 @@
       <div class="q-text">Which part of the session was most useful to you?</div>
       <div class="checkbox-list" id="q2-list">
         <label class="checkbox-item">
-          <input type="checkbox" value="Why Crux cares about AI / the fluency framework">
+          <input type="radio" name="q2" value="Why Crux cares about AI / the fluency framework">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Why Crux cares about AI / the fluency framework</span>
         </label>
         <label class="checkbox-item">
-          <input type="checkbox" value="How AI works (LLMs, models, context windows, hallucinations)">
+          <input type="radio" name="q2" value="How AI works (LLMs, models, context windows, hallucinations)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">How AI works (LLMs, models, context windows, hallucinations)</span>
         </label>
         <label class="checkbox-item">
-          <input type="checkbox" value="How to use AI well (intern analogy, CARE framework, prompting)">
+          <input type="radio" name="q2" value="How to use AI well (intern analogy, CARE framework, prompting)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">How to use AI well (intern analogy, CARE framework, prompting)</span>
         </label>
         <label class="checkbox-item">
-          <input type="checkbox" value="Your toolkit at Crux (Claude features, other tools, setup checklist)">
+          <input type="radio" name="q2" value="Your toolkit at Crux (Claude features, other tools, setup checklist)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Your toolkit at Crux (Claude features, other tools, setup checklist)</span>
         </label>
         <label class="checkbox-item">
-          <input type="checkbox" value="The guardrails (privacy, governance framework, six rules)">
+          <input type="radio" name="q2" value="The guardrails (privacy, governance framework, six rules)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">The guardrails (privacy, governance framework, six rules)</span>
         </label>
         <label class="checkbox-item">
-          <input type="checkbox" value="Workshop (hands-on time)">
+          <input type="radio" name="q2" value="Workshop (hands-on time)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Workshop (hands-on time)</span>
         </label>
@@ -421,11 +422,6 @@
           <input type="checkbox" value="Claude Connectors (Drive, Slack, HubSpot)">
           <span class="checkbox-box"></span>
           <span class="checkbox-text">Claude Connectors (Drive, Slack, HubSpot)</span>
-        </label>
-        <label class="checkbox-item">
-          <input type="checkbox" value="Claude Deep Research">
-          <span class="checkbox-box"></span>
-          <span class="checkbox-text">Claude Deep Research</span>
         </label>
         <label class="checkbox-item">
           <input type="checkbox" value="Slack AI">
@@ -557,7 +553,7 @@
   });
 
   function getCheckboxValues(listId) {
-    const inputs = document.querySelectorAll(`#${listId} input[type="checkbox"]:checked`);
+    const inputs = document.querySelectorAll(`#${listId} input:checked`);
     return Array.from(inputs).map(cb => cb.value).filter(Boolean);
   }
 
